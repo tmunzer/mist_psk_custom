@@ -1,0 +1,57 @@
+<style>
+    /* Chrome, Safari, Edge, Opera */
+    
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    /* Firefox */
+    
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+<h1 mat-dialog-title>Create New PSK</h1>
+<form [formGroup]="frmPsk" class="create-form">
+    <div mat-dialog-content fxLayout="column">
+
+        <mat-form-field appearance="outline">
+            <mat-label>NAME</mat-label>
+            <input matInput required formControlName="name" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>EMAIL</mat-label>
+            <input matInput formControlName="user_email" />
+        </mat-form-field>
+
+        <div fxLayout="row">
+            <mat-form-field appearance="outline" style="width: 400px;">
+                <mat-label>PSK</mat-label>
+                <input matInput required [type]="passwordFieldType" formControlName="psk" />
+
+                <button *ngIf="passwordFieldType=='password'" matSuffix mat-icon-button aria-label="show password" (click)="toggleShowPassword()">
+                    <mat-icon>visibility</mat-icon>
+                </button>
+                <button *ngIf="passwordFieldType=='text'" matSuffix mat-icon-button aria-label="show password" (click)="toggleShowPassword()">
+                    <mat-icon>visibility_off</mat-icon>
+                </button>
+            </mat-form-field>
+            <button mat-stroked-button (click)="generatePsk()" style="height: 50px;margin: 5px;color: #0d60aa;border: 1px solid;">Generate PSK</button>
+        </div>
+        <mat-form-field appearance="outline ">
+            <mat-label>SSID</mat-label>
+            <mat-select formControlName="ssid" required>
+                <mat-option *ngFor="let wlan of data.wlans" [value]="wlan.ssid">
+                    {{wlan.ssid}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+    </div>
+    <div mat-dialog-actions style="justify-content: space-around;" fxLayout="row">
+        <button mat-button (click)="cancel()">Cancel</button>
+        <button mat-raised-button color="accent" cdkFocusInitial (click)="confirm()" *ngIf="editing==true" [disabled]="frmPsk.invalid">Update</button>
+        <button mat-raised-button color="accent" cdkFocusInitial (click)="confirm()" *ngIf="editing==false" [disabled]="frmPsk.invalid">Create</button>
+    </div>
+</form>
