@@ -1,4 +1,4 @@
-# Mist Psk Web UI
+# Mist Psk Web UI - Custom
  
 This application provides a single page app to manage, create, edit and delete Personal PSKs from Mist Cloud. It is required to have a Mist account to get access to this app.
 
@@ -9,7 +9,7 @@ This program is free software: you can redistribute it and/or modify it under th
 <img src="https://github.com/tmunzer/mist_psk_stateless_web_ui/blob/master/._readme/main.png?raw=true"/>
 
 ## Features
-- Retrieve and display Org and Site PPSKs 
+- Configured for a single Org
 - Edit Org or Site PPSK
 - Create new Org or Site PPSK
 - Delete Org or Site PPSK
