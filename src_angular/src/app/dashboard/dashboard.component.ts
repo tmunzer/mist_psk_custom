@@ -70,6 +70,7 @@ export class DashboardComponent implements OnInit {
   psk_length: number = 12;
   ssid: string = "";
   me: string = "";
+  now : number = Date.now();
 
   sitesHidden: boolean = true;
   sitesDisabled: boolean = true;
@@ -87,7 +88,7 @@ export class DashboardComponent implements OnInit {
 
   filters_enabled: boolean = false
   resultsLength = 0;
-  displayedColumns: string[] = ['name', 'user_email', 'ssid', 'created_by', 'expire_time', 'action'];
+  displayedColumns: string[] = ['status', 'name', 'user_email', 'ssid', 'created_by', 'expire_time', 'action'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -97,6 +98,7 @@ export class DashboardComponent implements OnInit {
     this._appService.headers.subscribe(headers => this.headers = headers)
     this._appService.cookies.subscribe(cookies => this.cookies = cookies)
     this._appService.self.subscribe(self => this.self = self || {})
+
     this.me = this.self["email"] || null
     this.getConfig()
     if (!this.me) this._router.navigateByUrl("/")
