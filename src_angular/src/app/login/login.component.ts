@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { ConnectorService } from '../connector.service';
-import {PlatformLocation} from '@angular/common';
+import { PlatformLocation } from '@angular/common';
 import { TwoFactorDialog } from './login-2FA';
 
 export interface TwoFactorData {
@@ -21,7 +21,7 @@ export interface TwoFactorData {
 export class LoginComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder, private http: HttpClient, private router: Router, private appService: ConnectorService, public _dialog: MatDialog, private _platformLocation: PlatformLocation
-    ) { }
+  ) { }
 
   headers = {};
   cookies = {};
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
     this.appService.selfSet({});
     this.reset_error_mess();
   }
-  reset_error_mess(): void{
+  reset_error_mess(): void {
     this.error_mess = {
       "credentials": ""
     }
@@ -106,25 +106,29 @@ export class LoginComponent implements OnInit {
   //// AUTHENTICATION ////
   submitCredentials(): void {
     this.reset_response();
-      this.loading = true;
-      this.http.post<any>('/api/login/', { host: this.frmStepLogin.value.host, email: this.frmStepLogin.value.credentials.email, password: this.frmStepLogin.value.credentials.password }).subscribe({
-        next: data => this.parse_response(data),
-        error: error => this.error_message("credentials", error.error.message)      
-      })
+    this.loading = true;
+    this.http.post<any>('/api/login/', { host: this.frmStepLogin.value.host, email: this.frmStepLogin.value.credentials.email, password: this.frmStepLogin.value.credentials.password }).subscribe({
+      next: data => this.parse_response(data),
+      error: error => this.error_message("credentials", error.error.message)
+    })
   }
   submit2FA(twoFactor: number): void {
-      this.loading = true;
-      this.http.post<any>('/api/login/', { host: this.frmStepLogin.value.host, email: this.frmStepLogin.value.credentials.email, password: this.frmStepLogin.value.credentials.password, two_factor: twoFactor }).subscribe({
-        next: data => this.parse_response(data),
-        error: error => this.error_message("credentials", error.error.message)      
-      })
+    this.loading = true;
+    this.http.post<any>('/api/login/', { host: this.frmStepLogin.value.host, email: this.frmStepLogin.value.credentials.email, password: this.frmStepLogin.value.credentials.password, two_factor: twoFactor }).subscribe({
+      next: data => this.parse_response(data),
+      error: error => this.error_message("credentials", error.error.message)
+    })
   }
 
   //// DIALOG BOX ////
   open2FA(): void {
     const dialogRef = this._dialog.open(TwoFactorDialog, {});
     dialogRef.afterClosed().subscribe(result => {
-      this.submit2FA(result)
+      if (result) {
+        this.submit2FA(result)
+      } else {
+        this.loading = false;
+      }
     });
   }
 }
