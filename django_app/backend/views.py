@@ -46,6 +46,7 @@ finally:
     print("logo_url      : {0}".format(smtp_config["logo_url"]))
     print("enable_qrcode : {0}".format(smtp_config["enable_qrcode"]))
     print("")
+    mist_smtp = Mist_SMTP(smtp_config)
 
 
 try:
