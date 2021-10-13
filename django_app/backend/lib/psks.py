@@ -83,6 +83,7 @@ class Psk(Common):
                 "name": body["name"],
                 "passphrase": body["passphrase"],
                 "ssid": body["ssid"],
+                "expire_time": body["expire_time"],
                 "usage": "multi",
             }
             if "created_by" in body:

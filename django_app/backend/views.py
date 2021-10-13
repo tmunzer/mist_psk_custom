@@ -33,6 +33,20 @@ except:
         }
     else:
         smtp_config = None
+finally:
+    print("".ljust(80,"-"))
+    print(" SMTP CONFIG ".center(80))
+    print("")
+    print("host          : {0}".format(smtp_config["host"]))
+    print("port          : {0}".format(smtp_config["port"]))
+    print("use_ssl       : {0}".format(smtp_config["use_ssl"]))
+    print("username      : {0}".format(smtp_config["username"]))
+    print("from_name     : {0}".format(smtp_config["from_name"]))
+    print("from_email    : {0}".format(smtp_config["from_email"]))
+    print("logo_url      : {0}".format(smtp_config["logo_url"]))
+    print("enable_qrcode : {0}".format(smtp_config["enable_qrcode"]))
+    print("")
+
 
 try:
     from .config import mist_config
@@ -42,17 +56,45 @@ except:
         "host": os.environ.get("MIST_HOST", default="api.mist.com"),
         "org_id": os.environ.get("MIST_ORG_ID", default=None)
     }
+finally:
+    print("".ljust(80,"-"))
+    print(" CUSTOM CONFIG ".center(80))
+    print("")
+    print("host   : {0}".format(mist_config["host"]))
+    print("org_id : {0}".format(mist_config["org_id"]))
+    print("")
+
 
 
 try:
     from .config import psk_config
 except:
     psk_config = {
+        "default_expire_time": int(os.environ.get("MIST_PSK_DEFAULT_EXPIRE_TIME", default=24)),
         "length": int(os.environ.get("MIST_PSK_LENGTH", default=12))
     }
+finally:
+    print("".ljust(80,"-"))
+    print(" PSK CONFIG ".center(80))
+    print("")
+    print("default expire time: {0}".format(psk_config["default_expire_time"]))
+    print("length             : {0}".format(psk_config["length"]))
+    print("")
 
-mist_smtp = Mist_SMTP(smtp_config)
+print("".ljust(80,"-"))
 
+##########
+# PSK CONFIG
+@csrf_exempt
+def psk_config(request):
+    if request.method == "GET":
+        response = {
+            "psk_length": psk_config["length"],
+            "default_expire_time":psk_config["default_expire_time"]
+        }
+        return JsonResponse(status=200, data=response)
+    else:
+        return Http404
 
 ##########
 # PSK
@@ -119,7 +161,6 @@ def _get_self(request, host, method, headers={}, cookies=None):
     url = "https://{0}/api/v1/self".format(host)
     resp = requests.get(url, headers=headers, cookies=cookies)
     data = resp.json()
-    print(data)
     privileges = []
     if "privileges" in data:
         for priv in data["privileges"]:

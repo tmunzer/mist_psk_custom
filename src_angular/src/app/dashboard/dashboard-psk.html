@@ -16,15 +16,18 @@
 <form [formGroup]="frmPsk" class="create-form">
     <div mat-dialog-content fxLayout="column">
 
+        <!-- Name configuration  -->
         <mat-form-field appearance="outline">
             <mat-label>NAME</mat-label>
             <input matInput required formControlName="name" />
         </mat-form-field>
+        <!-- Email configuration  -->
         <mat-form-field appearance="outline">
             <mat-label>EMAIL</mat-label>
             <input matInput formControlName="user_email" />
         </mat-form-field>
 
+        <!-- Passphrase configuration  -->
         <div fxLayout="row">
             <mat-form-field appearance="outline" style="width: 400px;">
                 <mat-label>PSK</mat-label>
@@ -39,6 +42,47 @@
             </mat-form-field>
             <button mat-stroked-button (click)="generatePsk()" style="height: 50px;margin: 5px;color: #0d60aa;border: 1px solid;">Generate PSK</button>
         </div>
+
+        <!-- Duration configuration  -->
+        <mat-form-field appearance="outline ">
+            <mat-label>EXPIRE TIME</mat-label>
+            <mat-radio-group aria-label="Select an option" [(ngModel)]="expire_time">
+                <mat-radio-button value="none">None</mat-radio-button>
+                <mat-radio-button value="duration">Duration</mat-radio-button>
+                <mat-radio-button value="date">Date / Time</mat-radio-button>
+            </mat-radio-group>
+        </mat-form-field>
+
+        <div fxLayout="row" *ngIf="expire_time=='duration'">
+            <mat-form-field appearance="outline">
+                <mat-label>Expire In </mat-label>
+                <input matInput [(ngModel)]="duration" />
+                <mat-select [value]="duration_period">
+                    <mat-option valuu="hours">Hours</mat-option>
+                    <mat-option valuu="days">Days</mat-option>
+                    <mat-option valuu="months">Months</mat-option>
+                    <mat-option valuu="years">Years</mat-option>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+
+        <div fxLayout="row" *ngIf="expire_time=='date'">
+            <mat-form-field appearance="outline">
+                <mat-label>Expire In </mat-label>
+                <input matInput [(ngModel)]="duration" />
+                <mat-select [value]="duration_period">
+                    <mat-option valuu="hours">Hours</mat-option>
+                    <mat-option valuu="days">Days</mat-option>
+                    <mat-option valuu="months">Months</mat-option>
+                    <mat-option valuu="years">Years</mat-option>
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- SSID configuration  -->
         <mat-form-field appearance="outline ">
             <mat-label>SSID</mat-label>
             <mat-select formControlName="ssid" required>

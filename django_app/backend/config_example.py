@@ -11,7 +11,7 @@ smtp_config = {
     "enable_qrcode": True # Whether or not to display the QRcode to configuration smartphones
 }
 psk_config = {
-    "salt": "$2b$12$SIGWr574/7OggDO4BBJ1D.", # Salt for "renewable" PSK generation
+    "default_expire_time": 24, # In hours, 0 to disable
     "length": 12 # Size for "renewable" PSK length (must be between 8 and 63
 }
 mist_config = {

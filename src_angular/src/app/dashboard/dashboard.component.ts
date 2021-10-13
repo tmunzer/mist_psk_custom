@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 
 import { MatPaginator } from '@angular/material/paginator';
 import { merge, Observable, of as observableOf } from 'rxjs';
@@ -28,6 +28,7 @@ export interface PskElement {
   modified_time: number;
   passphrase: string;
   user_email: string;
+  expire_time: number;
 }
 
 export interface MistPsks {
@@ -65,12 +66,14 @@ export class DashboardComponent implements OnInit {
   wlans = [];
   site_id: string = "";
   sitegroups_ids: string[] = [];
+  default_expire_time: number = null;
+  psk_length: number = 12;
   ssid: string = "";
   me: string = "";
 
   sitesHidden: boolean = true;
   sitesDisabled: boolean = true;
-  
+
   wlansDisabled: boolean = true;
   createDisabled: boolean = true;
 
@@ -102,7 +105,7 @@ export class DashboardComponent implements OnInit {
           this.sitesHidden = false
           this.changeOrg()
         } else if (element["scope"] == "site") {
-          this.sites.push({id: element["site_id"], name: element["name"]})
+          this.sites.push({ id: element["site_id"], name: element["name"] })
         }
       });
       if (this.sites.length == 1) {
@@ -113,13 +116,36 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  //////////////////////////////////////////////////
+  // CONFIG
+  parsePskConfig(data): void {
+    if (data.psk_length) {
+      this.psk_length = data.psk_length
+    }
+    if (data.default_expire_time) {
+      this.default_expire_time = data.default_expire_time
+    }
+  }
 
+  getConfig() {
+    this._http.get<PskElement[]>('/api/psks/config').subscribe({
+      next: data => this.parsePskConfig(data),
+      error: error => {
+        var message: string = "There was an error... "
+        if ("error" in error) { message += error["error"]["message"] }
+        this.openError(message)
+      }
+    })
+  }
+
+  //////////////////////////////////////////////////
+  // PSK
   getPsks() {
     var body = null
     if (this.site_id == "org") {
       body = { cookies: this.cookies, headers: this.headers, ssid: this.ssid, full: this.filters_enabled }
     } else if (this.site_id) {
-      body = {  cookies: this.cookies, headers: this.headers, site_id: this.site_id, ssid: this.ssid, full: this.filters_enabled }
+      body = { cookies: this.cookies, headers: this.headers, site_id: this.site_id, ssid: this.ssid, full: this.filters_enabled }
     }
     if (body) {
 
@@ -164,17 +190,16 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  //////////////////////////////////////////////////
+  // WLANS
 
-  parseSites(data) {
-    if (data.sites.length > 0) {
-      this.sites = this.sortList(data.sites, "name");
-    }
-    this.sitesDisabled = false;
-    this.topBarLoading = false;
+  changeWlan() {
+    this.getPsks()
   }
+
   parseWlans(data) {
     this.wlans = []
-    if (data.wlans.length ==1) {
+    if (data.wlans.length == 1) {
       this.wlans = data.wlans;
       this.ssid = this.wlans[0].ssid;
       this.getPsks();
@@ -188,20 +213,9 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  changeOrg() {
-    this.topBarLoading = true;
-    this._http.post<any>('/api/sites/', { cookies: this.cookies, headers: this.headers }).subscribe({
-      next: data => this.parseSites(data),
-      error: error => {
-        var message: string = "There was an error... "
-        if ("error" in error) {
-          message += error["error"]["message"]
-        }
-        this.topBarLoading = false;
-        this.openError(message)
-      }
-    })
-  }
+  //////////////////////////////////////////////////
+  // SITES
+
   changeSite() {
     this.topBarLoading = true;
     var body = null
@@ -238,12 +252,36 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-
-  changeWlan() {
-    this.getPsks()
+  parseSites(data) {
+    if (data.sites.length > 0) {
+      this.sites = this.sortList(data.sites, "name");
+    }
+    this.sitesDisabled = false;
+    this.topBarLoading = false;
   }
 
 
+  //////////////////////////////////////////////////
+  // ORGS
+
+  changeOrg() {
+    this.topBarLoading = true;
+    this._http.post<any>('/api/sites/', { cookies: this.cookies, headers: this.headers }).subscribe({
+      next: data => this.parseSites(data),
+      error: error => {
+        var message: string = "There was an error... "
+        if ("error" in error) {
+          message += error["error"]["message"]
+        }
+        this.topBarLoading = false;
+        this.openError(message)
+      }
+    })
+  }
+
+
+
+  //////////////////////////////////////////////////
   // COMMON
   sortList(data, attribute) {
     return data.sort(function (a, b) {
@@ -277,7 +315,7 @@ export class DashboardComponent implements OnInit {
   }
 
 
- 
+
   // QRCODE DIALOG
   openQrcode(psk: PskElement): void {
     const dialogRef = this._dialog.open(QrCodeDialog, {
@@ -290,11 +328,16 @@ export class DashboardComponent implements OnInit {
 
   // CREATE DIALOG
   openCreate(): void {
+    let expire_time = null;
+    if (this.default_expire_time) {
+      expire_time = Date.now() + this.default_expire_time * 3600000;
+    }
     var newPsk: PskElement = {
       id: null,
       name: "",
       ssid: this.ssid,
       passphrase: "",
+      expire_time: expire_time,
       created_by: this.me,
       created_time: null,
       modified_time: null,
@@ -313,6 +356,7 @@ export class DashboardComponent implements OnInit {
             user_email: result.user_email,
             name: result.name,
             passphrase: result.psk,
+            expire_time: result.expire_time,
             ssid: result.ssid,
             vlan_id: result.vlan_id,
             created_by: this.me,
@@ -326,6 +370,7 @@ export class DashboardComponent implements OnInit {
             user_email: result.user_email,
             name: result.name,
             passphrase: result.psk,
+            expire_time: result.expire_time,
             ssid: result.ssid,
             vlan_id: result.vlan_id,
             created_by: this.me,
@@ -362,6 +407,7 @@ export class DashboardComponent implements OnInit {
             user_email: result.user_email,
             name: result.name,
             passphrase: result.psk,
+            expire_time: result.expire_time,
             ssid: result.ssid,
             vlan_id: result.vlan_id,
             created_by: this.me,
@@ -376,12 +422,13 @@ export class DashboardComponent implements OnInit {
             user_email: result.user_email,
             name: result.name,
             passphrase: result.psk,
+            expire_time: result.expire_time,
             ssid: result.ssid,
             vlan_id: result.vlan_id,
             created_by: this.me,
             renewable: result.renewable
           }
-        }      
+        }
         this._http.post<any>('/api/psks/create/', body).subscribe({
           next: data => {
             this.getPsks()

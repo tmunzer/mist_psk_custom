@@ -15,13 +15,22 @@ export class PskDialog {
         name: [this.data.psk.name, Validators.required],
         psk: [this.data.psk.passphrase, [Validators.minLength(8), Validators.maxLength(63)]],
         ssid: [this.data.psk.ssid, Validators.required],
+        expire_time: [this.data.psk.expire_time],
         user_email: [this.data.psk.user_email, Validators.email],
     });
-    editing = this.data.editing;
 
+    editing = this.data.editing;
+    expire_time = this.data.expire_time;
+    psk_length = this.data.psk_length;
+    duration = 1;
+    duration_period = "days";
+    
     constructor(public dialogRef: MatDialogRef<PskDialog>, @Inject(MAT_DIALOG_DATA) public data, private formBuilder: FormBuilder) { }
 
     confirm() {
+        if (this.expire_time == "none"){
+            this.frmPsk.controls["expire_time"].setValue(null)
+        }
         this.dialogRef.close(this.frmPsk.value)
     }
     cancel(): void {
@@ -31,7 +40,7 @@ export class PskDialog {
     generatePsk() {
         let possible = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
         let text = "";
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < this.psk_length; i++) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         this.frmPsk.controls["psk"].setValue(text);
@@ -44,4 +53,6 @@ export class PskDialog {
             this.passwordFieldType = "password";
         }
     }
+
+ 
 }

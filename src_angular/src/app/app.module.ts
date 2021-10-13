@@ -28,6 +28,12 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { QRCodeModule } from 'angularx-qrcode';
 
+import {
+  NgxMatDatetimePickerModule, 
+  NgxMatNativeDateModule, 
+  NgxMatTimepickerModule 
+} from '@angular-material-components/datetime-picker';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -71,7 +77,10 @@ import { WarningDialog } from './dashboard/dashboard-warning';
     MatDialogModule,
     FormsModule,
     MatIconModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    NgxMatNativeDateModule
   ],
   providers: [{
     provide: MatRadioModule,
