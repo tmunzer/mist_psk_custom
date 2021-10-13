@@ -87,7 +87,7 @@ export class DashboardComponent implements OnInit {
 
   filters_enabled: boolean = false
   resultsLength = 0;
-  displayedColumns: string[] = ['name', 'user_email', 'ssid', 'created_by', 'created_time', 'modified_time', 'action'];
+  displayedColumns: string[] = ['name', 'user_email', 'ssid', 'created_by', 'expire_time', 'action'];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -98,6 +98,7 @@ export class DashboardComponent implements OnInit {
     this._appService.cookies.subscribe(cookies => this.cookies = cookies)
     this._appService.self.subscribe(self => this.self = self || {})
     this.me = this.self["email"] || null
+    this.getConfig()
     if (!this.me) this._router.navigateByUrl("/")
     if (this.self != {} && this.self["privileges"]) {
       this.self["privileges"].forEach(element => {
@@ -343,8 +344,9 @@ export class DashboardComponent implements OnInit {
       modified_time: null,
       user_email: null
     };
+    console.log({ wlans: this.wlans, psk: newPsk, editing: false, default_expire_time: this.default_expire_time, psk_length: this.psk_length })
     const dialogRef = this._dialog.open(PskDialog, {
-      data: { wlans: this.wlans, psk: newPsk, editing: false }
+      data: { wlans: this.wlans, psk: newPsk, editing: false, default_expire_time: this.default_expire_time, psk_length: this.psk_length }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
@@ -394,7 +396,7 @@ export class DashboardComponent implements OnInit {
   // EDIT PSK
   openEdit(psk: PskElement): void {
     const dialogRef = this._dialog.open(PskDialog, {
-      data: { wlans: this.wlans, psk: psk, editing: true }
+      data: { wlans: this.wlans, psk: psk, editing: true, default_expire_time: this.default_expire_time, psk_length: this.psk_length }
     })
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

@@ -12,9 +12,19 @@
         -moz-appearance: textfield;
     }
 </style>
+
 <h1 mat-dialog-title>Create New PSK</h1>
 <form [formGroup]="frmPsk" class="create-form">
     <div mat-dialog-content fxLayout="column">
+        <!-- SSID configuration  -->
+        <mat-form-field appearance="outline ">
+            <mat-label>SSID</mat-label>
+            <mat-select formControlName="ssid" required>
+                <mat-option *ngFor="let wlan of data.wlans" [value]="wlan.ssid">
+                    {{wlan.ssid}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
 
         <!-- Name configuration  -->
         <mat-form-field appearance="outline">
@@ -34,68 +44,58 @@
                 <input matInput required [type]="passwordFieldType" formControlName="psk" />
 
                 <button *ngIf="passwordFieldType=='password'" matSuffix mat-icon-button aria-label="show password" (click)="toggleShowPassword()">
-                    <mat-icon>visibility</mat-icon>
+                    <mat-icon style="color: rgba(0,0,0,.6);">visibility</mat-icon>
                 </button>
                 <button *ngIf="passwordFieldType=='text'" matSuffix mat-icon-button aria-label="show password" (click)="toggleShowPassword()">
-                    <mat-icon>visibility_off</mat-icon>
+                    <mat-icon style="color: rgba(0,0,0,.6);">visibility_off</mat-icon>
                 </button>
             </mat-form-field>
             <button mat-stroked-button (click)="generatePsk()" style="height: 50px;margin: 5px;color: #0d60aa;border: 1px solid;">Generate PSK</button>
         </div>
 
-        <!-- Duration configuration  -->
-        <mat-form-field appearance="outline ">
-            <mat-label>EXPIRE TIME</mat-label>
-            <mat-radio-group aria-label="Select an option" [(ngModel)]="expire_time">
-                <mat-radio-button value="none">None</mat-radio-button>
-                <mat-radio-button value="duration">Duration</mat-radio-button>
-                <mat-radio-button value="date">Date / Time</mat-radio-button>
-            </mat-radio-group>
-        </mat-form-field>
-
-        <div fxLayout="row" *ngIf="expire_time=='duration'">
-            <mat-form-field appearance="outline">
-                <mat-label>Expire In </mat-label>
-                <input matInput [(ngModel)]="duration" />
-                <mat-select [value]="duration_period">
-                    <mat-option valuu="hours">Hours</mat-option>
-                    <mat-option valuu="days">Days</mat-option>
-                    <mat-option valuu="months">Months</mat-option>
-                    <mat-option valuu="years">Years</mat-option>
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-
-
-        <div fxLayout="row" *ngIf="expire_time=='date'">
-            <mat-form-field appearance="outline">
-                <mat-label>Expire In </mat-label>
-                <input matInput [(ngModel)]="duration" />
-                <mat-select [value]="duration_period">
-                    <mat-option valuu="hours">Hours</mat-option>
-                    <mat-option valuu="days">Days</mat-option>
-                    <mat-option valuu="months">Months</mat-option>
-                    <mat-option valuu="years">Years</mat-option>
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-
-        <!-- SSID configuration  -->
-        <mat-form-field appearance="outline ">
-            <mat-label>SSID</mat-label>
-            <mat-select formControlName="ssid" required>
-                <mat-option *ngFor="let wlan of data.wlans" [value]="wlan.ssid">
-                    {{wlan.ssid}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-    </div>
-    <div mat-dialog-actions style="justify-content: space-around;" fxLayout="row">
-        <button mat-button (click)="cancel()">Cancel</button>
-        <button mat-raised-button color="accent" cdkFocusInitial (click)="confirm()" *ngIf="editing==true" [disabled]="frmPsk.invalid">Update</button>
-        <button mat-raised-button color="accent" cdkFocusInitial (click)="confirm()" *ngIf="editing==false" [disabled]="frmPsk.invalid">Create</button>
     </div>
 </form>
+<!-- Duration configuration  -->
+
+<div style="border: 1px solid rgba(0,0,0,.12);border-radius: 5px;padding: 1em;">
+    <div style="display: flex;flex-direction: column;font: inherit;">
+        <label style="margin-bottom: 1em;color: rgba(0,0,0,.6);">EXPIRE TIME</label>
+        <mat-radio-group aria-label="Select an option" [(ngModel)]="expire_method" style="margin: 5px;display: flex;flex-direction: row;justify-content: space-evenly;">
+            <mat-radio-button value="none">None</mat-radio-button>
+            <mat-radio-button value="duration">Duration</mat-radio-button>
+            <mat-radio-button value="date">Date / Time</mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <div fxLayout="row" *ngIf="expire_method=='duration'" style="justify-content: space-evenly;margin: 1em 1em 0;">
+        <mat-form-field appearance="outline">
+            <mat-label>Expire In </mat-label>
+            <input matInput [(ngModel)]="duration" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-select [(ngModel)]="duration_period">
+                <mat-option value="hours">Hours</mat-option>
+                <mat-option value="days">Days</mat-option>
+                <mat-option value="days">Weeks</mat-option>
+                <mat-option value="months">Months</mat-option>
+                <mat-option value="years">Years</mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+
+    <div fxLayout="row" *ngIf="expire_method=='date'" style="justify-content: space-evenly;margin: 1em 1em 0;">
+        <mat-form-field>
+            <input matInput [ngxMatDatetimePicker]="picker" [min]="min_date" placeholder="Choose a date" [formControl]="dateControl">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #picker color="accent">
+            </ngx-mat-datetime-picker>
+        </mat-form-field>
+    </div>
+
+</div>
+
+
+<div mat-dialog-actions style="justify-content: space-around; margin-top: 2em" fxLayout="row">
+    <button mat-button (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="accent" cdkFocusInitial (click)="confirm()" *ngIf="editing==true" [disabled]="frmPsk.invalid">Update</button>
+    <button mat-raised-button color="accent" cdkFocusInitial (click)="confirm()" *ngIf="editing==false" [disabled]="frmPsk.invalid">Create</button>
+</div>

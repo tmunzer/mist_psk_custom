@@ -83,10 +83,14 @@ finally:
 
 print("".ljust(80,"-"))
 
+
+
+
+
 ##########
 # PSK CONFIG
 @csrf_exempt
-def psk_config(request):
+def pskConfig(request):    
     if request.method == "GET":
         response = {
             "psk_length": psk_config["length"],
@@ -166,13 +170,14 @@ def _get_self(request, host, method, headers={}, cookies=None):
         for priv in data["privileges"]:
             if "org_id" in priv and priv["org_id"] == mist_config["org_id"]:
                 privileges.append(priv)
+        print(privileges)
         if privileges:
             data["privileges"] = privileges
             return JsonResponse({"host": host, "data": data, "method": method, "headers": headers, "cookies":  cookies_dict})
     elif "two_factor_required" in data:
             return JsonResponse({"host": host, "data": data, "method": method, "headers": headers, "cookies":  cookies_dict})
-    else:
-        return JsonResponse(status=403, data={"message": "not authorized"})
+    
+    return JsonResponse(status=403, data={"message": "not authorized"})
 
 
 @csrf_exempt
@@ -187,7 +192,6 @@ def login(request):
                 data["two_factor"] = body["two_factor"]
             headers = {'Content-Type': "application/json"}
             resp = requests.post(url, json=data, headers={})
-
             if resp.status_code == 200:
                 cookies = resp.cookies
                 return _get_self(request, mist_config["host"], "username", headers=headers, cookies=cookies)
