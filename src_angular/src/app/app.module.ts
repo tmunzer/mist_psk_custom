@@ -26,7 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { Router } from '@angular/router';
-import { QRCodeModule } from 'angularx-qrcode';
+import { QrCodeModule } from 'ng-qrcode';
 
 import {
   NgxMatDatetimePickerModule, 
@@ -73,7 +73,7 @@ import { WarningDialog } from './dashboard/dashboard-warning';
     MatToolbarModule,
     MatTooltipModule,
     MatPaginatorModule,
-    QRCodeModule,
+    QrCodeModule,
     MatDialogModule,
     FormsModule,
     MatIconModule,
