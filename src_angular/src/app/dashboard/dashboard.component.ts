@@ -99,30 +99,6 @@ export class DashboardComponent implements OnInit {
     this._appService.cookies.subscribe(cookies => this.cookies = cookies)
     this._appService.self.subscribe(self => this.self = self || {})
 
-    this.self = {
-      "email": "super@stag.one",
-      "first_name": "super",
-      "last_name": "user",
-      "tags": [
-        "mist-customer"
-      ],
-      "session_expiry": 20160,
-      "privileges": [
-        {
-          "scope": "org",
-          "org_id": "b9953384-e443-4e71-a1c7-ed26c44f44e9",
-          "role": "admin",
-          "name": "TEST API - TM - US",
-          "msp_id": "d3ea21e6-b7a3-4027-a689-754cb88b9807",
-          "msp_name": "Munzer_MSP",
-          "orggroup_ids": []
-        }
-      ]
-    }
-    this.cookies = {
-      "csrftoken": "ZuKOqMZtsr4SKJOfUg8rO9MxdyAs4a1D7r4Eivu4M7z1syl4ZBerfVerRF8b3au7",
-      "sessionid": "twijvk75qoett7kx8vhhoa5vbcspu9a7"
-    }
     this.me = this.self["email"] || null
     this.getConfig()
     if (!this.me) this._router.navigateByUrl("/")
