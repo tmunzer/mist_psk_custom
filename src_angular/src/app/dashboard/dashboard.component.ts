@@ -70,7 +70,7 @@ export class DashboardComponent implements OnInit {
   psk_length: number = 12;
   ssid: string = "";
   me: string = "";
-  now : number = Date.now();
+  now : number = Math.trunc(Date.now()/1000);
 
   sitesHidden: boolean = true;
   sitesDisabled: boolean = true;
