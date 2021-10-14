@@ -49,6 +49,7 @@ MIST_SMTP_FROM_NAME | String | Wi-Fi Access | Email sender name |
 MIST_SMTP_FROM_EMAIL | String | None | Sender email address  |
 MIST_SMTP_LOGO_URL | String | https://cdn.mist.com/wp-content/uploads/logo.png | Logo displayed in the email header |
 MIST_SMTP_QRCODE | Boolean | True | Whether or not add an autoconfiguration QRCode for smartphones to the email |
+MIST_PSK_DEFAULT_EXPIRE_TIME | Number | 0 | Default Expire time for PSK creation, in hours. 0 to disable |
 MIST_PSK_LENGTH | Number | 12 | Size for "renewable" PSK length (must be between 8 and 63 |
 DJANGO_DEBUG | Number | 0 | Whether or not Django starts in Debug Mode (0=Production, 1=Debug) |
 DJANGO_ALLOWED_HOSTS | String |  | FQDN on which Django is listening. Only used in Production Mode |
