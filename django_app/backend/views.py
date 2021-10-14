@@ -71,7 +71,7 @@ try:
     from .config import psk_config
 except:
     psk_config = {
-        "default_expire_time": int(os.environ.get("MIST_PSK_DEFAULT_EXPIRE_TIME", default=24)),
+        "default_expire_time": int(os.environ.get("MIST_PSK_DEFAULT_EXPIRE_TIME", default=0)),
         "length": int(os.environ.get("MIST_PSK_LENGTH", default=12))
     }
 finally:
