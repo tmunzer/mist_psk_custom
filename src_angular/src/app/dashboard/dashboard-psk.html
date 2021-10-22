@@ -20,8 +20,8 @@
         <mat-form-field appearance="outline ">
             <mat-label>SSID</mat-label>
             <mat-select formControlName="ssid" required>
-                <mat-option *ngFor="let wlan of data.wlans" [value]="wlan.ssid">
-                    {{wlan.ssid}}
+                <mat-option *ngFor="let wlan of data.wlans" [value]="wlan">
+                    {{wlan}}
                 </mat-option>
             </mat-select>
         </mat-form-field>

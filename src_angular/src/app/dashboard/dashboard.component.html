@@ -16,8 +16,8 @@
                     <mat-label>SSID</mat-label>
                     <mat-select [(value)]="ssid" (selectionChange)="changeWlan()" [disabled]="wlansDisabled">
                         <mat-option value="">Any</mat-option>
-                        <mat-option *ngFor="let wlan of wlans " [value]="wlan.ssid">
-                            {{wlan.ssid}}
+                        <mat-option *ngFor="let wlan of wlans " [value]="wlan">
+                            {{wlan}}
                         </mat-option>
                     </mat-select>
                 </mat-form-field>

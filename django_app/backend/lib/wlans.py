@@ -38,8 +38,8 @@ class Wlan(Common):
                 for wlan in resp.json():
                     if wlan['auth']["type"] == "psk":
                         if "multi_psk_only" in wlan["auth"] and wlan["auth"]["multi_psk_only"] == True:
-                            wlans.append(
-                                {"id": wlan["id"], "ssid": wlan["ssid"]})               
+                            if not wlan["ssid"] in wlans:
+                                wlans.append(wlan["ssid"])
                 return {"status": 200, "data": {"wlans": wlans}}
             except:
                 logging.error("REQ: _get_wlans NOK")

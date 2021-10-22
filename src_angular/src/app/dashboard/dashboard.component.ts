@@ -202,14 +202,13 @@ export class DashboardComponent implements OnInit {
   }
 
   parseWlans(data) {
-    this.wlans = []
+    this.wlans = data.wlans;
     if (data.wlans.length == 1) {
-      this.wlans = data.wlans;
-      this.ssid = this.wlans[0].ssid;
+      this.ssid = this.wlans[0];
       this.getPsks();
     }
     else if (data.wlans.length > 0) {
-      this.wlans = this.sortList(data.wlans, "ssid");
+      this.wlans.sort();
       this.getPsks()
     }
     this.wlansDisabled = false;
