@@ -27,7 +27,7 @@
     "@angular/platform-browser": "~12.2.16",
     "@angular/platform-browser-dynamic": "~12.2.16",
     "@angular/router": "~12.2.16",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "ng-qrcode": "^5.1.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
