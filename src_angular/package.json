@@ -30,7 +30,7 @@
     "moment": "^2.29.4",
     "ng-qrcode": "^5.2.0",
     "rxjs": "~6.6.7",
-    "tslib": "^2.6.0",
+    "tslib": "^2.6.2",
     "zone.js": "~0.13.2"
   },
   "devDependencies": {
